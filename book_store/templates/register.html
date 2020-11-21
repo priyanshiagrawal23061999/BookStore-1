@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block base_head %}
+
+    {% endblock %}
+</head>
+<body>
+    {% block base_body %}
+        <div class="container">
+         <div style="text-align: center"><h1>Create an Account...</h1></div>
+        <h1>{{ mess }}</h1><br />
+            <form action="{% url 'reg' %}" method="POST">{% csrf_token %}
+                <div class="form-group">
+                    <label for="name">First Name: </label>
+                    <input type="text" name="ufname" maxlength="20" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="name">Second Name: </label>
+                    <input type="text" name="usname" maxlength="20" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="name">Username: </label>
+                    <input type="text" name="uname" id="uname" maxlength="20" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email address: </label>
+                    <input type="email" class="form-control" name="umail" />
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password: </label>
+                    <input type="password" name="upass" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="pwd">Password Again: </label>
+                    <input type="password" name="upass1" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="name">Phone Number: </label>
+                    <input type="text" name="uphone" maxlength="10" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="name">Card Details: </label>
+                    <input type="text" name="ucard" maxlength="12" class="form-control" />
+                </div>
+                <div class="form-group">
+                    <label for="name">Mailing Address: </label><br />
+                    <textarea class="form-control" name="uaddr" rows="5"></textarea>
+                </div>
+                <input type="submit" class="btn btn-success" value="Register" />
+            </form>
+        </div>
+    {% endblock %}
+</body>
+</html>

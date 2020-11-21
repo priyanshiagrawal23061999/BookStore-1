@@ -1,0 +1,16 @@
+
+
+
+
+
+
+        <div class="container">
+            <div class="col-sm-12">
+                <h2>Account details...</h2>
+                <h4>You logged in as - {{ uobj.umail }}</h4>
+                <h4>username - {{ uobj.uname }}</h4>
+                <h4>card Number - {{ uobj.ucard }}</h4>
+                <h4>Phone Number - {{ uobj.uphone }}</h4>
+                <h4>Address - {{ uobj.uaddr }}</h4>
+            </div>
+        </div>

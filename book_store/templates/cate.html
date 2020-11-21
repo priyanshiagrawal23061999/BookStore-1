@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% block base_head %}
+        <title>{{ cn.cate_name }}</title>
+    {% endblock %}
+</head>
+<body>
+{% block base_body %}
+<div class="container-fluid">
+
+    <div class="row container"><div class="col-sm-12"><h3>{{ cn.cate_name }}</h3></div></div>
+    <div class="row">
+
+        <div class="col-sm-2" style="padding: 15px; text-align: center;">
+            {% for x in cobj %}
+                <div style="border-bottom: 1px solid #000000 ">
+                    <h5><a href="{% url 'cate' prod_id=x.id %}">{{ x.cate_name }}</a></h5>
+                </div>
+            {% endfor %}
+        </div>
+        <div class="col-sm-10">
+        <h2>{{ mess }}</h2>
+            {% for x in bobj %}
+
+                 {% if x.book_genre == cn.cate_name %}
+
+            <div class="row">
+                <div class="col-sm-10" style="padding:10px; margin-top: 10px; border-bottom:1px solid #C0C0C0; height:250px">
+                    <div class="row">
+                        <div class="col-sm-3"  style=" height: 210px; background-repeat:no-repeat; background-size:cover;">
+                            <img src="../..{{ x.book_image.url }}" style=" height: 210px; width:200px;" alt="image"/>
+                        </div>
+                        <div class="col-sm-9">
+                            <div class="row">
+                                <div class="col-sm-12">
+                                    <a href="{% url 'sprod' prod_id=x.id %}"><h2>{{ x.book_title }}</h2></a>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <h4>Author - {{ x.book_author }}</h4>
+                                    <h4>Publisher - {{ x.book_publisher }}</h4>
+                                    <h4>ISBN10 - {{ x.book_isbn10 }}</h4>
+                                    <h4>Price - {{ x.book_price }}/-</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>Genre - {{ x.book_genre }}</h4>
+                                    <h4>Year - {{ x.book_year }}</h4>
+                                    <h4>Language - {{ x.book_lang }}</h4>
+                                    <h4>Copies Available - {{ x.book_copies }}</h4>
+                                </div>
+                                <div class="col-sm-4">
+                                    <h4>Description :- </h4>
+                                    <div style="overflow-y: scroll; height:100px;" >
+                                        <p>{{ x.book_description }}</p>
+                                    </div>
+                                </div>
+                            </div>
+                    </div>
+                </div>
+                </div>
+            </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}
+</body>
+</html>

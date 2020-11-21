@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta charset="UTF-8"/>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+    {% block base_head %}
+    {% endblock %}
+
+</head>
+<body>
+    <nav class="navbar navbar-inverse navbar-static-top ">
+
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{% url 'index' %}">BOOK STORE</a>
+        </div>
+
+        <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+          <form class="navbar-form navbar-left" method="POST" action="{% url 'search' %}">{% csrf_token %}
+            <div class="form-group">
+              <input type="text" style="width: 400px;" class="form-control" name="sval" maxlength="150" placeholder="Search: Title; Author; Publisher">
+            </div>
+            <input type="submit"  class="btn btn-info" value="Search"/>
+          </form>
+
+           {% if tfmess == 'False' %}
+          <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'login' %}">Login</a></li>
+            <li><a href="{% url 'reg' %}">Register</a></li>
+          </ul>
+            {% endif %}
+            {% if tfmess == 'True' %}
+            <ul class="nav navbar-nav navbar-right">
+            <li><a href="{% url 'account' %}">Profile</a></li>
+            <li><a href="{% url 'orders' %}">Reports</a></li>
+            <li><a href="{% url 'cart' %}">Cart</a></li>
+            <li><a href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+            {% endif %}
+        </div>
+      </div>
+    </nav>
+
+    {% block base_body %}
+
+    {% endblock %}
+
+</body>
+</html>
