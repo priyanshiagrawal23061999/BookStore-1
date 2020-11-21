@@ -104,15 +104,15 @@ def forgot(request):
         umail = request.POST.get('umail')
 
         email_subject = 'Activate Your Account'
-                message = render_to_string('accounts/activate_account.html', {
+        message = render_to_string('accounts/activate_account.html', {
                     'user': user,
                     'domain': current_site.domain,
                     'uid': urlsafe_base64_encode(force_bytes(user.pk)),
                     'token': account_activation_token.make_token(user),
                 })
-                to_email = form.cleaned_data.get('email')
-                email = EmailMessage(email_subject, message, to=[to_email])
-                email.send()
+        to_email = form.cleaned_data.get('email')
+        email = EmailMessage(email_subject, message, to=[to_email])
+        email.send()
 
 
     return HttpResponse(template.render(context,request))
