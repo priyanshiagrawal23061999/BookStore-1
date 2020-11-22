@@ -12,7 +12,7 @@
         <div class="container">
          <div style="text-align: center"><h1>Create an Account...</h1></div>
         <h1>{{ mess }}</h1><br />
-            <form action="{% url 'reg' %}" method="POST">{% csrf_token %}
+            <form action="{% url 'reg' %}" method="POST" style='padding-bottom: 10px;'>{% csrf_token %}
                 <div class="form-group">
                     <label for="name">First Name: </label>
                     <input type="text" name="ufname" maxlength="20" class="form-control" />
