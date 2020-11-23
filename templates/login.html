@@ -10,9 +10,16 @@
 <body>
     {% block base_body %}
         <div class="container">
+          <div>
+            <h1>{{ message }}</h1>
+         </div>
+          <form class="signup-form" action="." method="POST" >{% csrf_token %}
+ <!-- form header -->
+ <div class="form-header">
             <div style="text-align: center"><h1>Enter Login Details...</h1></div>
-            <div style="margin-top:30px; width:300px; padding-bottom: 10px; ">
-                 <form action="." method="POST" >{% csrf_token %}
+ </div>
+ <!-- form body -->
+ <div class="form-body">
 
                       <div class="form-group">
                         <label for="email"><b>Email address:</b></label>
@@ -22,6 +29,9 @@
                         <label for="pwd"><b>Password</b></label>
                         <input type="password" placeholder="Enter Password" name="upass" id="upass" class="form-control" required>
                       </div>
+ </div>
+ <!-- form footer -->
+ <div class="form-footer">
                       <div class="form-group">
                         <label>
                           <input type="checkbox" checked="checked" name="remember"> Remember me
@@ -30,19 +40,19 @@
                         <button type="button" class="btn btn-danger" value="Cancel">Cancel</button>
 
                         <button type="submit" class="btn btn-success" value="Login">Login</button>
+                        <span>Forgot <a href="#">password?</a></span>
                         
                       </div>
                     
-                      <div class="form-group" style="background-color:#f1f1f1">
+                      <!-- <div class="form-group" style="background-color:#f1f1f1">
                         <span class="psw">Forgot <a href="#">password?</a></span>
-                      </div>
+                      </div> -->
+                    </div>
                  </form>
             </div>
         </div>
 
-        <div>
-           <h1>{{ message }}</h1>
-        </div>
+        
     {% endblock %}
 </body>
 </html>
