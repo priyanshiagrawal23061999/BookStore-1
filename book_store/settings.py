@@ -56,8 +56,7 @@ ROOT_URLCONF = 'book_store.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [os.path.join(BASE_DIR, 'templates')]
-        ,
+        'DIRS': [os.path.join(BASE_DIR, 'templates')],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -122,15 +121,15 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"),'/var/www/static/',]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), '/var/www/static/', ]
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = (os.path.join(BASE_DIR, 'media'))
 
-#for email activation code
+# for email activation code
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_TLS = True
+EMAIL_USE_SSL = True
 EMAIL_HOST_USER = 'atpwd1234@gmail.com'
-EMAIL_HOST_PASSWORD = 'Sparsh@01'
+EMAIL_HOST_PASSWORD = 'Pawan08082000'
 EMAIL_PORT = 587
