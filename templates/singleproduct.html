@@ -2,13 +2,18 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
+    {% block extrahead %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/mycss/comments.css' %}">
+    {% endblock %}
     {% block base_head %}
 
     {% endblock %}
 </head>
+
 <body>
-{% block base_body %}
+    {% block base_body %}
     <div class="container">
         <div class="row">
             <div class="col-sm-3">
@@ -16,9 +21,9 @@
                     <img src="../..{{ cn.book_image.url }}" style="height:400px;width:300px;" />
                 </div>
                 <div><br />
-                     <form action="{% url 'cart0' %}" method="POST">{% csrf_token %}
-                            <input type="submit" value="ADD TO CART" class="btn btn-success form-control" />
-                     </form>
+                    <form action="{% url 'cart0' %}" method="POST">{% csrf_token %}
+                        <input type="submit" value="ADD TO CART" class="btn btn-success form-control" />
+                    </form>
                 </div>
             </div>
             <div class="col-sm-1"></div>
@@ -52,25 +57,65 @@
         </div>
         <div class="row">
             <div class="col-sm-12">
-                <div class="row"><h3>Comments...</h3></div>
-                <div class="row container">
-                    {% for x in bcobj %}
-                            <div class="row"></div>
-                            <div class="row">
-                            <h4>User Mail - <span>{{ x.bumail }}</span> </h4>
-                            <p>User Comment - <span>{{ x.bcom }}</span></p>
+
+                <div class="row d-flex justify-content-center mt-100 mb-100">
+                    <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body text-center">
+                                <div class="row">
+                                    <h3>Comments...</h3>
+                                </div>
                             </div>
-                    {% endfor %}
-                </div>
-                <div class="row">
-                    <form class="form-group" action="{% url 'sprod' prod_id=cn.id  %}" method="POST">{% csrf_token %}
-                        <textarea class="form-control" rows="5" cols="10" name="ctext" placeholder="Enter Comment here"></textarea><br />
-                        <input type="submit" value="comment" class="btn btn-info" />
-                    </form>
+                            {% for x in bcobj %}
+
+                            <div class="comment-widgets">
+                                <!-- Comment Row -->
+
+                                <div class="d-flex flex-row comment-row m-t-0">
+
+                                    <div class="p-2"><img
+                                            src="https://lh4.googleusercontent.com/-KOah7oFR6hw/AAAAAAAAAAI/AAAAAAAAAAA/YRfckkOmnbI/s64-c-k/photo.jpg"
+                                            alt="user" width="50" class="dot">
+                                        <!-- <span class="dot"></span> -->
+                                    </div>
+                                    <div class="comment-text w-100">
+
+                                        <!-- <div class="row container"> -->
+                                        <!-- <div class="row"></div>
+                            <div class="row"> -->
+                                        <h6 class="font-medium"><b>{{ x.bumail }}</b></h6>
+                                        <span class="m-b-15 d-block">
+                                            {{ x.bcom }}</span>
+
+
+                                    </div>
+
+                                </div>
+
+                                <!-- </div> -->
+                            </div>
+                            {% endfor %}
+                            <form class="form-group" class="signup-form" action="{% url 'sprod' prod_id=cn.id  %}"
+                                method="POST">{% csrf_token %}
+                                <!-- form body -->
+                                <div class="form-body">
+                                    <!-- <div class="row"> -->
+                                    <label for="comments" class="label-title">Write your comments here:</label>
+                                    <textarea class="form-control" rows="5" cols="10" style="height:auto" name="ctext"
+                                        placeholder="Enter Comment here"></textarea><br />
+                                    <input type="submit" value="comment" class="btn btn-info" />
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
-{% endblock %}
+
+    </div>
+    {% endblock %}
 </body>
+
 </html>
