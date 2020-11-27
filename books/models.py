@@ -2,18 +2,19 @@ from django.db import models
 
 class Ureg(models.Model):
 
-    ufname = models.CharField(max_length=20)
-    usname = models.CharField(max_length=20)
-    uname = models.CharField(max_length=20)
-    umail = models.EmailField()
-    upass = models.CharField(max_length=20)
-    uphone = models.CharField(max_length=10)
-    uaddr = models.TextField()
-    ucard = models.CharField(max_length=12)
-    utype = models.CharField(max_length=10, default='costumer')
+    firstName = models.CharField(max_length=20)
+    lastName = models.CharField(max_length=20)
+    username = models.CharField(max_length=20)
+    email = models.EmailField()
+    password = models.CharField(max_length=20)
+    confirmPassword = models.CharField(max_length=10)
+    phoneNumber = models.IntegerField(default=0)
+    address = models.TextField()
+    cardNumber = models.CharField(max_length=12)
+    userType = models.CharField(max_length=10, default='costumer')
 
     def __str__(self):
-        return self.uname
+        return self.username
 
 class Books(models.Model):
 
