@@ -11,6 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from .tasks import go_to_sleep
 from django.contrib import messages
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -24,7 +25,6 @@ from .token_generator import account_activation_token
 from .decorators import unauthenticated_user,admin_only,allowed_users
 
 
-
 def index(request):
     template = loader.get_template('index.html')
     context = {'tfmess': 'False'}
@@ -34,9 +34,55 @@ def index(request):
     if request.user.is_authenticated:
         umail = request.user
         context['tfmess'] = 'True'
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
 
     return HttpResponse(template.render(context,request))
 
+
+def login(request):
+    template = loader.get_template('login.html')
+    context = {'tfmess': 'False'}
+    request.session.flush()
+
+    if request.session.has_key('umail'):
+        context['umail'] = umail = request.session['umail']
+        context['tfmess'] = 'True'
+
+    if request.method == 'POST':
+
+        umail = request.POST.get('uemail')
+        upass = request.POST.get('upass')
+
+        for x in Ureg.objects.all():
+            if x.umail == umail and x.upass == upass:
+
+                request.session['umail'] = umail
+
+                if x.utype == 'customer':
+
+                    return redirect('index')
+
+                if x.utype == 'provider':
+                    return redirect('pro_home')
+
+        context['message'] = "Permission denied, your mail didn't approved"
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
+    
+
+    return HttpResponse(template.render(context,request))
+
+
+def reg(request):
+    template = loader.get_template('register.html')
+    context = {'mess': '', 'tfmess': 'False'}
+    request.session.flush()
+
+    if request.session.has_key('umail'):
+        context['umail'] = umail = request.session['umail']
+        context['tfmess'] = 'True'
+        
 @unauthenticated_user
 def loginpage(request):
     print('login',request)
@@ -91,6 +137,41 @@ def signup(request):
             email = EmailMessage(
                 mail_subject, message, to=[to_email]
             )
+
+            ucobj.save()
+
+            context['mess'] = 'Registration Successful'
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
+    return HttpResponse(template.render(context,request))
+
+def forgot(request):
+    template = loader.get_template('Auth/forgot.html')
+    context = {'tfmess': 'False'}
+    request.session.flush()
+
+    if request.session.has_key('umail'):
+        context['umail'] = umail = request.session['umail']
+        context['tfmess'] = 'True'
+
+    if request.method == 'POST':
+        umail = request.POST.get('umail')
+
+        email_subject = 'Activate Your Account'
+        message = render_to_string('accounts/activate_account.html', {
+                    'user': user,
+                    'domain': current_site.domain,
+                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                    'token': account_activation_token.make_token(user),
+                })
+        to_email = form.cleaned_data.get('email')
+        email = EmailMessage(email_subject, message, to=[to_email])
+        email.send()
+
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
+    return HttpResponse(template.render(context,request))
+
             print(email)
             email.send()
             return HttpResponse('Please confirm your email address to complete the registration')
@@ -133,7 +214,8 @@ def search(request):
 
         if nnn == '':
             context['mess'] = 'Results not found'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def cate(request, prod_id):
@@ -157,7 +239,8 @@ def cate(request, prod_id):
 
     if val == 0:
         context['mess'] = 'No books Available'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def sprod(request, prod_id):
@@ -180,7 +263,8 @@ def sprod(request, prod_id):
         ctext = request.POST.get('ctext')
         obj = Bcomm.objects.create(btitle=cn.book_title, bcom=ctext, bumail=umail)
         obj.save()
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 
@@ -193,7 +277,8 @@ def pro_home(request):
 
     uobjmail = request.session['umail']
     context['bobj'] = bobj = Books.objects.all()
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def pro_add_book(request):
@@ -232,6 +317,8 @@ def pro_add_book(request):
         )
         upobj.save()
         context['mess'] = 'Book added Successfully'
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 
@@ -242,7 +329,8 @@ def pro_report(request):
     context['bobj'] = bobj = Books.objects.all()
 
 
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 #--------------------- customer -------------------
@@ -319,7 +407,8 @@ def cart(request):
                     uobj.uaddr = caddr2
                     uobj.save()
                     context['mess'] = 'Orders placed successfully, please check for reports'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login')
@@ -335,7 +424,8 @@ def orders(request):
         context['tfmess'] = 'True'
 
 
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login')
@@ -360,6 +450,7 @@ def account(request):
         uuobj.save()
 
         context['mess'] = 'Account Details Updated'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 

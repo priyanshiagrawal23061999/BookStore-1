@@ -38,8 +38,11 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books.apps.BooksConfig',
-     "crispy_forms",
 
+     'django_celery_results',
+      'celery_progress',
+
+     "crispy_forms",
 
 ]
 
@@ -137,3 +140,10 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'atpwd1234@gmail.com'
 EMAIL_HOST_PASSWORD = 'Pawan08082000'
 EMAIL_PORT = 587
+
+# for celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'
