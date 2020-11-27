@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books.apps.BooksConfig',
+     "crispy_forms",
+
 
 ]
 
@@ -126,10 +128,12 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR, "static"), '/var/www/static/', ]
 MEDIA_URL = '/media/'
 MEDIA_ROOT = (os.path.join(BASE_DIR, 'media'))
 
+CRISPY_TEMPLATE_PACK="bootstrap4"
+
 # for email activation code
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_SSL = True
+EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'atpwd1234@gmail.com'
 EMAIL_HOST_PASSWORD = 'Pawan08082000'
 EMAIL_PORT = 587

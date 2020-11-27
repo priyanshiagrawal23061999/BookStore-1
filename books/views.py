@@ -1,10 +1,29 @@
 from django.http import HttpResponse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.template import loader
 from books.models import *
 import os
 from book_store import settings
+
+from django.contrib.auth.tokens import default_token_generator
+from django.contrib.auth import authenticate, login, logout
+
+from django.contrib.sites.shortcuts import get_current_site
+from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
+from django.contrib import messages
+from django.utils.encoding import force_bytes
+from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.contrib.auth import get_user_model
+from django.contrib.auth.decorators import login_required
+
+
+UserModel = get_user_model()
+from .forms import RegisterForm
+from .token_generator import account_activation_token
+from .decorators import unauthenticated_user,admin_only,allowed_users
+
+
 
 def index(request):
     template = loader.get_template('index.html')
@@ -12,110 +31,87 @@ def index(request):
     context['cateobj'] = cateobj = Cate.objects.all()
     context['bobj'] = bobj = Books.objects.all()
 
-    if request.session.has_key('umail'):
-        context['umail'] = umail = request.session['umail']
+    if request.user.is_authenticated:
+        umail = request.user
         context['tfmess'] = 'True'
 
     return HttpResponse(template.render(context,request))
 
-def login(request):
-    template = loader.get_template('login.html')
-    context = {'tfmess': 'False'}
-    request.session.flush()
-
-    if request.session.has_key('umail'):
-        context['umail'] = umail = request.session['umail']
-        context['tfmess'] = 'True'
-
+@unauthenticated_user
+def loginpage(request):
+    print('login',request)
     if request.method == 'POST':
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+        print(username,password)
+        user = authenticate(request, username=username, password=password)
+        print(user)
+        # user2 = requests.post('http://127.0.0.1:8000//login/token/',
+        #                       data={'username': username, 'password': password})
+        # print('user2', user2)
+        if user is not None:
+            login(request,user)
+            return redirect('index')
 
-        umail = request.POST.get('uemail')
-        upass = request.POST.get('upass')
+        else:
+            messages.info(request, 'Username OR password is incorrect')
 
-        for x in Ureg.objects.all():
-            if x.umail == umail and x.upass == upass:
+    context = {}
+    return render(request, 'Auth/login.html', context)
 
-                request.session['umail'] = umail
+def logoutpage(request):
+    print('request',request)
+    logout(request)
+    return redirect('login')
 
-                if x.utype == 'customer':
 
-                    return redirect('index')
-
-                if x.utype == 'provider':
-                    return redirect('pro_home')
-
-        context['message'] = "Permission denied, your mail didn't approved"
-
-    return HttpResponse(template.render(context,request))
-
-def reg(request):
-    template = loader.get_template('register.html')
-    context = {'mess': '', 'tfmess': 'False'}
-    request.session.flush()
-
-    if request.session.has_key('umail'):
-        context['umail'] = umail = request.session['umail']
-        context['tfmess'] = 'True'
-
+def signup(request):
+    if request.method == 'GET':
+        return render(request, 'Auth/register.html')
     if request.method == 'POST':
-        uname = request.POST.get('uname')
-        umail = request.POST.get('umail')
-        upass = request.POST.get('upass')
-        ufname = request.POST.get('ufname')
-        usname = request.POST.get('usname')
-        uaddr = request.POST.get('uaddr')
-        uphone = request.POST.get('uphone')
-        ucard = request.POST.get('ucard')
-        utype = 'customer'
-
-        for x in Ureg.objects.all():
-            if x.umail == umail:
-                context['mess'] = 'mail id is already registered'
-
-        if context['mess'] != 'mail id is already registered':
-            ucobj = Ureg.objects.create(
-                uname=uname,
-                umail=umail,
-                upass=upass,
-                ufname=ufname,
-                usname=usname,
-                uaddr=uaddr,
-                uphone=uphone,
-                ucard=ucard,
-                utype=utype
+        form = RegisterForm(request.POST)
+        # print(form.errors.as_data())
+        print(form)
+        print(form.is_valid())
+        if form.is_valid():
+            print('Valid')
+            user = form.save(commit=False)
+            user.is_active = False
+            user.save()
+            current_site = get_current_site(request)
+            mail_subject = 'Activate your account.'
+            message = render_to_string('Auth/activate_account.html', {
+                'user': user,
+                'domain': current_site.domain,
+                'uid': urlsafe_base64_encode(force_bytes(user.pk)),
+                'token': default_token_generator.make_token(user),
+            })
+            to_email = form.cleaned_data.get('email')
+            print(to_email)
+            email = EmailMessage(
+                mail_subject, message, to=[to_email]
             )
+            print(email)
+            email.send()
+            return HttpResponse('Please confirm your email address to complete the registration')
+        else:
+            print('invalid')
+    else:
+        form = SignUpForm()
+    return render(request, 'Auth/register.html', {'form': form})
 
-            ucobj.save()
-
-            context['mess'] = 'Registration Successful'
-
-    return HttpResponse(template.render(context,request))
-
-def forgot(request):
-    template = loader.get_template('Auth/forgot.html')
-    context = {'tfmess': 'False'}
-    request.session.flush()
-
-    if request.session.has_key('umail'):
-        context['umail'] = umail = request.session['umail']
-        context['tfmess'] = 'True'
-
-    if request.method == 'POST':
-        umail = request.POST.get('umail')
-
-        email_subject = 'Activate Your Account'
-        message = render_to_string('accounts/activate_account.html', {
-                    'user': user,
-                    'domain': current_site.domain,
-                    'uid': urlsafe_base64_encode(force_bytes(user.pk)),
-                    'token': account_activation_token.make_token(user),
-                })
-        to_email = form.cleaned_data.get('email')
-        email = EmailMessage(email_subject, message, to=[to_email])
-        email.send()
-
-
-    return HttpResponse(template.render(context,request))
+def activate(request, uidb64, token):
+    try:
+        uid = urlsafe_base64_decode(uidb64).decode()
+        user = UserModel._default_manager.get(pk=uid)
+    except(TypeError, ValueError, OverflowError, User.DoesNotExist):
+        user = None
+    if user is not None and default_token_generator.check_token(user, token):
+        user.is_active = True
+        user.save()
+        return redirect('Thank you for your email confirmation. Now you can login your account.')
+    else:
+        return HttpResponse('Activation link is invalid!')
 
 def search(request):
     template = loader.get_template('search.html')
@@ -187,13 +183,7 @@ def sprod(request, prod_id):
 
     return HttpResponse(template.render(context, request))
 
-def logout(request):
-    template = loader.get_template('logout.html')
-    context = {'mess': ''}
 
-    request.session.flush()
-
-    return redirect('index')
 
 #--------------------- provider -------------------
 
@@ -244,6 +234,7 @@ def pro_add_book(request):
         context['mess'] = 'Book added Successfully'
     return HttpResponse(template.render(context, request))
 
+
 def pro_report(request):
     template = loader.get_template('provider/pro_reports.html')
     context = {'mess': ""}
@@ -255,7 +246,7 @@ def pro_report(request):
     return HttpResponse(template.render(context, request))
 
 #--------------------- customer -------------------
-
+@login_required(login_url='login')
 def cart0(request):
     template = loader.get_template('cart0.html')
     context = {'mess': "single", 'tot': '', 'tfmess': 'False'}
@@ -285,6 +276,7 @@ def cart0(request):
     else:
         return redirect('login')
 
+@login_required(login_url='login')
 def cart(request):
     template = loader.get_template('cart.html')
     context = {'mess': "", 'tot':0, 'tfmess': 'False'}
@@ -330,6 +322,7 @@ def cart(request):
 
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='login')
 def orders(request):
     template = loader.get_template('orders.html')
     context = {'mess': "single", 'tfmess': 'False'}
@@ -345,10 +338,11 @@ def orders(request):
 
     return HttpResponse(template.render(context, request))
 
+@login_required(login_url='login')
 def account(request):
     template = loader.get_template('account.html')
     context = {'mess': "", 'tfmess': 'False'}
-    context['umail'] = umail = request.session['umail']
+    context['email'] = email = request.session['email']
     context['tfmess'] = 'True'
     context['uobj'] = uobj = Ureg.objects.get(umail=umail)
 

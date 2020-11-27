@@ -1,22 +1,23 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    {% load static %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta charset="UTF-8"/>
+  {% load static %}
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta charset="UTF-8" />
 
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
-    <link rel="stylesheet" type="text/css" href="{% static 'css/mycss/global.css' %}">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <link rel="stylesheet" type="text/css" href="{% static 'css/mycss/global.css' %}">
 
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
 
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
-
-    {% block base_head %}
-    {% endblock %}
+  {% block base_head %}
+  {% endblock %}
 
 </head>
+
 <body>
   <div id="main-wrapper">
     <nav class="navbar navbar-inverse navbar-static-top ">
@@ -26,29 +27,31 @@
         <div class="navbar-header">
           <a class="navbar-brand" href="{% url 'index' %}">BOOK STORE</a>
         </div>
-
+        <!-- <div style="color:white">{{request.user.email}}</div> -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
+
           <form class="navbar-form navbar-left" method="POST" action="{% url 'search' %}">{% csrf_token %}
             <div class="form-group">
-              <input type="text" style="width: 400px;" class="form-control" name="sval" maxlength="150" placeholder="Search: Title; Author; Publisher">
+              <input type="text" style="width: 400px;" class="form-control" name="sval" maxlength="150"
+                placeholder="Search: Title; Author; Publisher">
             </div>
-            <input type="submit"  class="btn btn-info" value="Search"/>
+            <input type="submit" class="btn btn-info" value="Search" />
           </form>
 
-           {% if tfmess == 'False' %}
+          {% if not user.is_authenticated %}
           <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'login' %}">Login</a></li>
-            <li><a href="{% url 'reg' %}">Register</a></li>
+            <li><a href="{% url 'register' %}">Register</a></li>
           </ul>
-            {% endif %}
-            {% if tfmess == 'True' %}
-            <ul class="nav navbar-nav navbar-right">
+          {% endif %}
+          {% if user.is_authenticated %}
+          <ul class="nav navbar-nav navbar-right">
             <li><a href="{% url 'account' %}">Profile</a></li>
             <li><a href="{% url 'orders' %}">Reports</a></li>
             <li><a href="{% url 'cart' %}">Cart</a></li>
             <li><a href="{% url 'logout' %}">Logout</a></li>
-            </ul>
-            {% endif %}
+          </ul>
+          {% endif %}
         </div>
       </div>
     </nav>
@@ -56,48 +59,54 @@
     {% block base_body %}
 
     {% endblock %}
-  <div>
-    <br> 
-  </div>
+    <div>
+      <br>
+    </div>
     <!-- This is where the footer begins -->
-<!-- <div class="container"> -->
-  <div class="content">
-    <footer class="row">
-      <div class="sozial col-xs-12 col-sm-6 col-sm-push-12">
-        <ul class="row">
-          <li class="col-xs-6 col-sm-2">
-            <a href="#">
-              <img class="logo" src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/online_social_media_facebook-128.png">
-            </a>
-          </li>
-          <li class="col-xs-6 col-sm-2">
-            <a href="#">
-              <img class="logo" src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/twitter_online_social_media-128.png">
-            </a>
-          </li>
-          <li class="col-xs-6 col-sm-2">
-            <a href="#">
-              <img class="logo" src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/instagram_online_social_media_photo-128.png">
-            </a>
-          </li>
-          <li class="col-xs-6 col-sm-2">
-            <a href="#">
-              <img class="logo" src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/online_social_media_google_plus-128.png">
-            </a>
-          </li>
-        </ul>
-      </div><!--  Sozial media -->
-      
-      <div class="copyright col-xs-12 col-sm-3 col-sm-pull-2">
-        <p> &copy; Pawan Priyanshi Product </p>
-      </div><!--  Copyright -->
-      
-      <div class="impressum col-xs-12 col-sm-3 col-sm-pull-1">
-        <p> IGEC Book Store </p>
-        <p> Sagar </p>
-      </div><!-- Address -->
-    </footer></div>
-  <!-- </div> -->
+    <!-- <div class="container"> -->
+    <div class="content">
+      <footer class="row">
+        <div class="sozial col-xs-12 col-sm-6 col-sm-push-12">
+          <ul class="row">
+            <li class="col-xs-6 col-sm-2">
+              <a href="#">
+                <img class="logo"
+                  src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/online_social_media_facebook-128.png">
+              </a>
+            </li>
+            <li class="col-xs-6 col-sm-2">
+              <a href="#">
+                <img class="logo"
+                  src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/twitter_online_social_media-128.png">
+              </a>
+            </li>
+            <li class="col-xs-6 col-sm-2">
+              <a href="#">
+                <img class="logo"
+                  src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/instagram_online_social_media_photo-128.png">
+              </a>
+            </li>
+            <li class="col-xs-6 col-sm-2">
+              <a href="#">
+                <img class="logo"
+                  src="https://cdn2.iconfinder.com/data/icons/black-white-social-media/32/online_social_media_google_plus-128.png">
+              </a>
+            </li>
+          </ul>
+        </div><!--  Sozial media -->
+
+        <div class="copyright col-xs-12 col-sm-3 col-sm-pull-2">
+          <p> &copy; Pawan Priyanshi Product </p>
+        </div><!--  Copyright -->
+
+        <div class="impressum col-xs-12 col-sm-3 col-sm-pull-1">
+          <p> IGEC Book Store </p>
+          <p> Sagar </p>
+        </div><!-- Address -->
+      </footer>
+    </div>
+    <!-- </div> -->
   </div>
 </body>
+
 </html>

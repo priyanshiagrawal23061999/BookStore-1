@@ -1,9 +1,15 @@
-from django.urls import path
-from . import views
+from django.urls import path, include
+from . import views, forms
 from django.contrib.auth import views as auth_views
-import pdb
+
 
 urlpatterns = [
+
+    path('register/', views.signup, name="register"),
+    path('activate/<uidb64>/<token>/',views.activate, name='activate'),
+    path('login/', views.loginpage, name='login'),
+    path('logout/', views.logoutpage, name='logout'),
+    
 #Forget Password
 # pdb.set_trace()
 path('reset_password/',auth_views.PasswordResetView.as_view(
@@ -18,9 +24,10 @@ path('reset_password/',auth_views.PasswordResetView.as_view(
         template_name="Auth/password_reset_form.html"),
         name="password_reset_confirm"),
 
-    path('reset_password_complete/',auth_views.PasswordResetCompleteView.as_view(
-        template_name="Auth/password_reset_done.html"),
-        name="password_rest_complete"),
+    path('reset_password_complete/',
+         auth_views.PasswordResetCompleteView.as_view(
+             template_name="Auth/password_reset_done.html"),
+         name="password_reset_complete"),
 
     #      path('/login/token/', jwt_views.TokenObtainPairView.as_view(), name='gettoken'),
     # path('/api/testing/', views.TestApiView.as_view(), name='gettoken')

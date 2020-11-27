@@ -1,0 +1,117 @@
+{% extends 'base.html' %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    {% block base_head %}
+
+    {% endblock %}
+</head>
+
+<body>
+    {% block base_body %}
+    <div class="container">
+        {% if messages %}
+        {% for message in messages %}
+        <div class="alert-danger {% if message.tags %} alert-{{ message.tags }}{% endif %}">{{ message|safe }}</div>
+        {% endfor %}
+        {% endif %}
+
+        {% if form.errors %}
+        <div class="alert alert-error">
+            <h4>Please fix the following errors</h4>
+            <ul>
+                {% for field in form %}
+                {% if field.errors %}
+                {% for error in field.errors %}
+                <li><a href="#id_{{ field.name }}" class="error">{{ error|escape }}</a></li>
+                {% endfor %}
+                {% endif %}
+                {% endfor %}
+            </ul>
+            {% if form.non_field_errors %}
+            {{ form.non_field_errors }}
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form class="signup-form" action="{% url 'register' %}" method="POST">{% csrf_token %}
+            <!-- form header -->
+            <div class="form-header">
+                <h1>Create an Account</h1>
+            </div>
+            <!-- form body -->
+            <div class="form-body">
+                <!-- Firstname and Lastname -->
+                <div class="horizontal-group">
+                    <div class="form-group left">
+                        <label for="name" class="label-title">Firstname:* </label>
+                        <input type="text" name="first_name" maxlength="20" id="firstname" class="form-input"
+                            placeholder="enter your first name" required="required" />
+
+                    </div>
+                    <div class="form-group right">
+                        <label for="name" class="label-title">Lastname:* </label>
+                        <input type="text" name="last_name" maxlength="20" id="lastname" class="form-input"
+                            placeholder="enter your last name" required='required' />
+                    </div>
+                </div>
+                <!--Username-->
+                <div class="form-group">
+                    <label for="name" class="label-title">Username*: </label>
+                    <input type="text" name="username" id="uname" maxlength="20" class="form-input"
+                        placeholder="enter your Username" required="required" />
+                    <p> Required. 150 characters or fewer. Letters, digits and @/./+/-/_ only.</p>
+                </div>
+                <!-- Email -->
+                <div class="form-group">
+                    <label for="email" class="label-title">Email* </label>
+                    <input type="email" id="email" class="form-input" placeholder="enter your email" required="required"
+                        name="email" />
+                </div>
+                <!-- Passwrod and confirm password -->
+                <div class="horizontal-group">
+                    <div class="form-group left">
+                        <label for="pwd" class="label-title">Password:* </label>
+                        <input type="password" name="password1" id="password" class="form-input"
+                            placeholder="enter your password" required="required" />
+                    </div>
+                    <div class="form-group right">
+                        <label for="pwd" class="label-title">Confirm Password *</label>
+                        <input type="password" name="password2" class="form-input" id="confirm-password"
+                            placeholder="enter your password again" required="required" />
+                    </div>
+                    <p class="info">Your password can't be too similar to your other personal information.</p>
+                    <p> Your password must contain at least 8 characters.</p>
+                    <p> Your password can't be a commonly used password.</p>
+                    <p> Your password can't be entirely numeric.</p>
+                </div>
+                <!--Phone Number-->
+                <!-- <div class="form-group">
+                    <label for="name" class="label-title">Phone Number: </label>
+                    <input type="text" name="phoneNumber" maxlength="10" class="form-input"
+                        placeholder="enter your Phone Number" />
+                </div>
+                <div class="form-group">
+                    <label for="name" class="label-title">Card Details: </label>
+                    <input type="text" name="cardNumber" maxlength="12" class="form-input"
+                        placeholder="enter your Phone Number" />
+                </div>
+                <div class="form-group">
+                    <label for="name" class="label-title">Mailing Address: </label><br />
+                    <textarea class="form-input" name="address" rows="5" cols="50" style="height:auto"></textarea>
+                </div> -->
+            </div>
+            <!-- form footer -->
+            <div class="form-footer">
+                <span>* required</span>
+                <input type="submit" class="btn btn-success" value="Register" />
+
+            </div>
+        </form>
+    </div>
+    {% endblock %}
+</body>
+
+</html>
