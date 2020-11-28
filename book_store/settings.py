@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'books.apps.BooksConfig',
+     'django_celery_results',
+      'celery_progress',
 
 ]
 
@@ -129,7 +131,14 @@ MEDIA_ROOT = (os.path.join(BASE_DIR, 'media'))
 # for email activation code
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_USE_SSL = True
+EMAIL_USE_TSL = True
 EMAIL_HOST_USER = 'atpwd1234@gmail.com'
 EMAIL_HOST_PASSWORD = 'Pawan08082000'
 EMAIL_PORT = 587
+
+# for celery settings
+CELERY_BROKER_URL = 'redis://localhost:6379'
+
+CELERY_ACCEPT_CONTENT = ['json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_BACKEND = 'django-db'

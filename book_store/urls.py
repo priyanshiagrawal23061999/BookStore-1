@@ -15,6 +15,7 @@ import pdb
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('books.urls')),
+    path('celery-progress/', include('celery_progress.urls')),
     path('', views.index, name='index'),
     path('login/', views.login, name='login'),
     path('register/', views.reg, name='reg'),

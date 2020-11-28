@@ -12,6 +12,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+   
     {% block extrahead %}{% endblock %}
     {% block base_head %}
     {% endblock %}
@@ -51,8 +52,31 @@
             {% endif %}
         </div>
       </div>
+     
     </nav>
 
+    <div class='progress-wrapper'>
+      <div id='progress-bar' class='progress-bar' style="background-color: #68a9ef; width: 0%;">&nbsp;</div>
+    </div>
+    <div id="progress-bar-message">Waiting for progress to start...</div>
+    <script src="{% static 'celery_progress/celery_progress.js' %}"></script>
+    <script>
+    var progressUrl = "{% url 'celery_progress:task_status' task_id %}";
+
+// JQuery
+    function customResult(resultElement, result) {
+      $( resultElement ).append(
+         $('<p>').text('Sum of all seconds is ' + result)
+      );
+    }
+
+
+    CeleryProgressBar.initProgressBar(progressUrl, {
+          onResult: customResult,
+    })
+
+  </script>
+  
     {% block base_body %}
 
     {% endblock %}

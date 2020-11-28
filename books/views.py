@@ -5,6 +5,7 @@ from books.models import *
 import os
 from book_store import settings
 from django.core.mail import EmailMessage
+from .tasks import go_to_sleep
 
 def index(request):
     template = loader.get_template('index.html')
@@ -15,8 +16,11 @@ def index(request):
     if request.session.has_key('umail'):
         context['umail'] = umail = request.session['umail']
         context['tfmess'] = 'True'
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
 
     return HttpResponse(template.render(context,request))
+
 
 def login(request):
     template = loader.get_template('login.html')
@@ -45,8 +49,12 @@ def login(request):
                     return redirect('pro_home')
 
         context['message'] = "Permission denied, your mail didn't approved"
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
+    
 
     return HttpResponse(template.render(context,request))
+
 
 def reg(request):
     template = loader.get_template('register.html')
@@ -88,7 +96,8 @@ def reg(request):
             ucobj.save()
 
             context['mess'] = 'Registration Successful'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context,request))
 
 def forgot(request):
@@ -114,7 +123,8 @@ def forgot(request):
         email = EmailMessage(email_subject, message, to=[to_email])
         email.send()
 
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context,request))
 
 def search(request):
@@ -137,7 +147,8 @@ def search(request):
 
         if nnn == '':
             context['mess'] = 'Results not found'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def cate(request, prod_id):
@@ -161,7 +172,8 @@ def cate(request, prod_id):
 
     if val == 0:
         context['mess'] = 'No books Available'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def sprod(request, prod_id):
@@ -184,7 +196,8 @@ def sprod(request, prod_id):
         ctext = request.POST.get('ctext')
         obj = Bcomm.objects.create(btitle=cn.book_title, bcom=ctext, bumail=umail)
         obj.save()
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def logout(request):
@@ -203,7 +216,8 @@ def pro_home(request):
 
     uobjmail = request.session['umail']
     context['bobj'] = bobj = Books.objects.all()
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def pro_add_book(request):
@@ -242,6 +256,8 @@ def pro_add_book(request):
         )
         upobj.save()
         context['mess'] = 'Book added Successfully'
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def pro_report(request):
@@ -251,7 +267,8 @@ def pro_report(request):
     context['bobj'] = bobj = Books.objects.all()
 
 
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 #--------------------- customer -------------------
@@ -327,7 +344,8 @@ def cart(request):
                     uobj.uaddr = caddr2
                     uobj.save()
                     context['mess'] = 'Orders placed successfully, please check for reports'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def orders(request):
@@ -342,7 +360,8 @@ def orders(request):
         context['tfmess'] = 'True'
 
 
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
 def account(request):
@@ -366,6 +385,7 @@ def account(request):
         uuobj.save()
 
         context['mess'] = 'Account Details Updated'
-
+    result = go_to_sleep.delay(1)
+    context['task_id']= result.task_id
     return HttpResponse(template.render(context, request))
 
