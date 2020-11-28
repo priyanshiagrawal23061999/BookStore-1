@@ -15,7 +15,7 @@ import pdb
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('books.urls')),
-    path('celery-progress/', include('celery_progress.urls')),
+   
     path('', views.index, name='index'),
     path('search/', views.search,name='search'),
     url(r'^cate/(?P<prod_id>[0-9]+)', views.cate, name='cate'),
