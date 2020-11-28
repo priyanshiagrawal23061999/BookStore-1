@@ -11,7 +11,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.sites.shortcuts import get_current_site
 from django.template.loader import render_to_string
 from django.core.mail import EmailMessage
-from .tasks import go_to_sleep
+
 from django.contrib import messages
 from django.utils.encoding import force_bytes
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
@@ -34,9 +34,7 @@ def index(request):
     if request.user.is_authenticated:
         umail = request.user
         context['tfmess'] = 'True'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
-
+   
     return HttpResponse(template.render(context,request))
 
 
@@ -67,9 +65,7 @@ def login(request):
                     return redirect('pro_home')
 
         context['message'] = "Permission denied, your mail didn't approved"
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
-    
+  
 
     return HttpResponse(template.render(context,request))
 
@@ -141,8 +137,7 @@ def signup(request):
             ucobj.save()
 
             context['mess'] = 'Registration Successful'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+   
     return HttpResponse(template.render(context,request))
 
 def forgot(request):
@@ -168,8 +163,7 @@ def forgot(request):
         email = EmailMessage(email_subject, message, to=[to_email])
         email.send()
 
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+    
     return HttpResponse(template.render(context,request))
 
             print(email)
@@ -214,8 +208,7 @@ def search(request):
 
         if nnn == '':
             context['mess'] = 'Results not found'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+    
     return HttpResponse(template.render(context, request))
 
 def cate(request, prod_id):
@@ -239,8 +232,7 @@ def cate(request, prod_id):
 
     if val == 0:
         context['mess'] = 'No books Available'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+   
     return HttpResponse(template.render(context, request))
 
 def sprod(request, prod_id):
@@ -263,8 +255,7 @@ def sprod(request, prod_id):
         ctext = request.POST.get('ctext')
         obj = Bcomm.objects.create(btitle=cn.book_title, bcom=ctext, bumail=umail)
         obj.save()
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+   
     return HttpResponse(template.render(context, request))
 
 
@@ -277,8 +268,7 @@ def pro_home(request):
 
     uobjmail = request.session['umail']
     context['bobj'] = bobj = Books.objects.all()
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+    
     return HttpResponse(template.render(context, request))
 
 def pro_add_book(request):
@@ -317,8 +307,7 @@ def pro_add_book(request):
         )
         upobj.save()
         context['mess'] = 'Book added Successfully'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+    
     return HttpResponse(template.render(context, request))
 
 
@@ -329,8 +318,7 @@ def pro_report(request):
     context['bobj'] = bobj = Books.objects.all()
 
 
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+   
     return HttpResponse(template.render(context, request))
 
 #--------------------- customer -------------------
@@ -407,8 +395,7 @@ def cart(request):
                     uobj.uaddr = caddr2
                     uobj.save()
                     context['mess'] = 'Orders placed successfully, please check for reports'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+   
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login')
@@ -424,8 +411,7 @@ def orders(request):
         context['tfmess'] = 'True'
 
 
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+    
     return HttpResponse(template.render(context, request))
 
 @login_required(login_url='login')
@@ -450,7 +436,6 @@ def account(request):
         uuobj.save()
 
         context['mess'] = 'Account Details Updated'
-    result = go_to_sleep.delay(1)
-    context['task_id']= result.task_id
+    
     return HttpResponse(template.render(context, request))
 
