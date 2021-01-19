@@ -25,7 +25,7 @@ SECRET_KEY = 'x!nd&a36yc-$bc-7y%(4pd!3vk8a=k^govipakk1vl43rur$d4'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = [127.0.0.1]
+ALLOWED_HOSTS = ['127.0.0.1','booktore-1.herokuapp.com']
 
 
 # Application definition
