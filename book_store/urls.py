@@ -3,11 +3,13 @@ from django.urls import path, include
 from books import views
 
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
-from django.conf.urls import url
 
 from django.conf.urls.static import static
 from book_store import settings
 import pdb
+
+from django.views.static import serve
+from django.conf.urls import url
 # from django.contrib.auth import views as auth_views
 
 
@@ -15,7 +17,8 @@ import pdb
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('books.urls')),
-   
+    url(r'^media/(?P<path>.*)$', serve,{'document_root':       settings.MEDIA_ROOT}), 
+    url(r'^static/(?P<path>.*)$', serve,{'document_root': settings.STATIC_ROOT}),
     path('', views.index, name='index'),
     path('search/', views.search,name='search'),
     url(r'^cate/(?P<prod_id>[0-9]+)', views.cate, name='cate'),
